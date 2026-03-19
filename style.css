@@ -230,6 +230,36 @@ p { font-family: 'Cairo', 'Inter', sans-serif; }
 }
 
 /* =============================================
+   SCROLL PROGRESS & ANIMATIONS
+   ============================================= */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: var(--gradient-primary);
+  z-index: 10000;
+  transition: width 0.1s ease-out;
+}
+
+.animated-gradient-text {
+  background: linear-gradient(to right, #6C72F6, #34D399, #A5B4FC, #4F46E5);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* =============================================
    NAVBAR
    ============================================= */
 .navbar {
@@ -580,9 +610,16 @@ p { font-family: 'Cairo', 'Inter', sans-serif; }
 .hero-image-wrapper {
   position: relative;
   border-radius: var(--radius-xl);
-  overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(108, 114, 246, 0.2);
+  z-index: 2;
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+}
+
+.hero-image-wrapper svg {
+  transform: translateZ(20px);
 }
 
 .hero-image-wrapper img {
@@ -602,17 +639,19 @@ p { font-family: 'Cairo', 'Inter', sans-serif; }
 /* Floating elements */
 .float-card {
   position: absolute;
-  background: rgba(255,255,255,0.1);
+  background: rgba(17, 19, 40, 0.8);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 16px 24px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
-  gap: 12px;
-  animation: floatY 4s ease-in-out infinite;
+  gap: 16px;
   z-index: 3;
+  box-shadow: 0 16px 32px rgba(0,0,0,0.25);
+  animation: floatY 4s ease-in-out infinite;
+  transform: translateZ(60px);
 }
 
 .float-card-1 {
@@ -680,6 +719,27 @@ p { font-family: 'Cairo', 'Inter', sans-serif; }
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+}
+
+.problem-card::before, .feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(800px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(108, 114, 246, 0.15), transparent 40%);
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.problem-card:hover::before, .feature-card:hover::before {
+  opacity: 1;
+}
+
+.problem-card > *, .feature-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 [data-theme="light"] .problem-card {
@@ -1359,4 +1419,38 @@ p { font-family: 'Cairo', 'Inter', sans-serif; }
   .hero-stats { flex-direction: column; gap: 20px; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .stat-item .stat-number { font-size: 2rem; }
+}
+
+/* =============================================
+   DYNAMIC BACKGROUND PARTICLES
+   ============================================= */
+.bg-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+  animation: floatParticle 20s infinite ease-in-out alternate;
+}
+
+[data-theme="light"] .particle {
+  opacity: 0.6;
+  filter: blur(100px);
+}
+
+.p1 { width: 400px; height: 400px; background: #6C72F6; top: -100px; left: -100px; }
+.p2 { width: 350px; height: 350px; background: #34D399; bottom: 100px; right: 50px; animation-delay: -5s; }
+.p3 { width: 300px; height: 300px; background: #A5B4FC; top: 40%; left: 30%; animation-delay: -10s; }
+
+@keyframes floatParticle {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(80px, 40px) scale(1.1); }
+  100% { transform: translate(-30px, 80px) scale(0.9); }
 }
