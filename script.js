@@ -179,15 +179,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('scroll', highlightNav);
 
-  // ---- Parallax on Hero ----
-  const heroImage = document.querySelector('.hero-image-wrapper');
-
-  if (heroImage && window.innerWidth > 768) {
+  // ---- Scroll Progress Bar ----
+  const scrollProgress = document.getElementById('scrollProgress');
+  if (scrollProgress) {
     window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY;
-      if (scrolled < 800) {
-        heroImage.style.transform = `translateY(${scrolled * 0.05}px)`;
-      }
+      const totalScroll = document.documentElement.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scroll = `${(totalScroll / windowHeight) * 100}%`;
+      scrollProgress.style.width = scroll;
+    });
+  }
+
+  // ---- Premium Card Glow Effect ----
+  const cards = document.querySelectorAll('.problem-card, .feature-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+
+  // ---- 3D Parallax Hero Effect ----
+  const heroSection = document.querySelector('.hero');
+  const heroWrapper = document.querySelector('.hero-image-wrapper');
+  
+  if (heroSection && heroWrapper && window.innerWidth > 768) {
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -5;
+      const rotateY = ((x - centerX) / centerX) * 5;
+      
+      heroWrapper.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+      heroWrapper.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg)`;
     });
   }
 
